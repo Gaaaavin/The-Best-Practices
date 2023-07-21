@@ -1,2 +1,1 @@
-# The-Best-Practices
-The-Best-Practices is Xinhao's personal blog
+# [The-Best-Practices](https://gaaaavin.github.io/The-Best-Practices)
