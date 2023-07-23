@@ -2,20 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://gaaaavin.github.io/The-Best-Practices/general/</loc>
+    <lastmod>2023-07-23T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+  </url><url>
+    <loc>https://gaaaavin.github.io/The-Best-Practices/general/motivation/</loc>
+    <lastmod>2023-07-23T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+  </url><url>
     <loc>https://gaaaavin.github.io/The-Best-Practices/</loc>
     <lastmod>2023-07-21T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-  </url><url>
-    <loc>https://gaaaavin.github.io/The-Best-Practices/post/20-12-02-icml-best-paper/</loc>
-    <lastmod>2020-12-02T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-  </url><url>
-    <loc>https://gaaaavin.github.io/The-Best-Practices/post/</loc>
-    <lastmod>2020-12-02T00:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-  </url><url>
-    <loc>https://gaaaavin.github.io/The-Best-Practices/post/20-12-01-wowchemy-prize/</loc>
-    <lastmod>2020-12-01T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
   </url><url>
     <loc>https://gaaaavin.github.io/The-Best-Practices/admin/</loc>
@@ -24,10 +20,10 @@
     <loc>https://gaaaavin.github.io/The-Best-Practices/authors/</loc>
     <changefreq>weekly</changefreq>
   </url><url>
-    <loc>https://gaaaavin.github.io/The-Best-Practices/categories/</loc>
+    <loc>https://gaaaavin.github.io/The-Best-Practices/hpc/</loc>
     <changefreq>weekly</changefreq>
   </url><url>
-    <loc>https://gaaaavin.github.io/The-Best-Practices/hpc/</loc>
+    <loc>https://gaaaavin.github.io/The-Best-Practices/categories/</loc>
     <changefreq>weekly</changefreq>
   </url><url>
     <loc>https://gaaaavin.github.io/The-Best-Practices/pytorch/</loc>
