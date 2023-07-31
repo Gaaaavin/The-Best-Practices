@@ -5,12 +5,96 @@
     <link>https://gaaaavin.github.io/The-Best-Practices/hpc/</link>
       <atom:link href="https://gaaaavin.github.io/The-Best-Practices/hpc/index.xml" rel="self" type="application/rss+xml" />
     <description>Best Practices for HPC</description>
-    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Fri, 28 Jul 2023 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://gaaaavin.github.io/The-Best-Practices/media/icon_hu2a508e6ae6e9a8da6b9815a10a466680_273297_512x512_fill_lanczos_center_3.png</url>
       <title>Best Practices for HPC</title>
       <link>https://gaaaavin.github.io/The-Best-Practices/hpc/</link>
     </image>
+    
+    <item>
+      <title>Accessing HPC</title>
+      <link>https://gaaaavin.github.io/The-Best-Practices/hpc/access_to_hpc/</link>
+      <pubDate>Fri, 28 Jul 2023 00:00:00 +0000</pubDate>
+      <guid>https://gaaaavin.github.io/The-Best-Practices/hpc/access_to_hpc/</guid>
+      <description>&lt;p&gt;HPC-part-1&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;NYU High Performance Computing (NYU HPC) provides access to state of the art supercomputer hardware and cloud services to eligible faculty and students across all of NYU.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Most of the blog is adapted from &lt;a href=&#34;https://sites.google.com/nyu.edu/nyu-hpc/accessing-hpc&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this page&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;br&gt;
+&lt;h1 id=&#34;-getting-started&#34;&gt;🎬 Getting started&lt;/h1&gt;
+&lt;p&gt;Before accessing the HPC cluster, you need to have an account. If you don&amp;rsquo;t have one yet, please obtain one by following &lt;strong&gt;step 1&lt;/strong&gt; and &lt;strong&gt;step 2&lt;/strong&gt; in &lt;a href=&#34;https://www.nyu.edu/life/information-technology/research-computing-services/high-performance-computing/high-performance-computing-nyu-it/hpc-accounts-and-eligibility.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this page&lt;/a&gt;.&lt;/p&gt;
+&lt;br&gt;
+&lt;h1 id=&#34;-network-configurations&#34;&gt;⚙️ Network configurations&lt;/h1&gt;
+&lt;p&gt;Now that you should have an HPC account, we need to configure your network settings to access the HPC cluster.&lt;/p&gt;
+&lt;p&gt;If you are on the NYU network, you can access the HPC cluster directly without any extra configurations.&lt;/p&gt;
+&lt;p&gt;Otherwise, you have two options to access the HPC cluster:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;NYU VPN&lt;/strong&gt;: You can use the &lt;a href=&#34;https://www.nyu.edu/life/information-technology/infrastructure/network-services/vpn.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;NYU VPN&lt;/a&gt; to connect to the NYU network. This is often default option for most users.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HPC gateway&lt;/strong&gt;: If in some cases you cannot use the NYU VPN, you can use the HPC gateway &lt;code&gt;gw.hpc.nyu.edu&lt;/code&gt; (example below) to connect. Note that it is only a portal-like server, and you cannot run any jobs on it.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;br&gt;
+&lt;h1 id=&#34;-command-line&#34;&gt;＞ Command line&lt;/h1&gt;
+&lt;h3 id=&#34;1-gateway&#34;&gt;1. Gateway&lt;/h3&gt;
+&lt;p&gt;(Ignore this step if you are using NYU VPN or on the NYU network)&lt;/p&gt;
+&lt;p&gt;Connect to the HPC gateway using SSH:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ssh &amp;lt;NetID&amp;gt;@gw.hpc.nyu.edu
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;2-ssh&#34;&gt;2. SSH&lt;/h3&gt;
+&lt;p&gt;Connect to the HPC cluster using SSH:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ssh &amp;lt;NetID&amp;gt;@greene.hpc.nyu.edu
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;3-save-password&#34;&gt;3. Save password&lt;/h3&gt;
+&lt;p&gt;(Optional)
+Once you logged in to HPC, you can set up an SSH key to avoid typing your password every time you log in.&lt;/p&gt;
+&lt;p&gt;⚠️ &lt;strong&gt;Only do this on your trusted computer&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;First, generate a SSH key pair on your local machine (disconnecting from HPC):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ssh-keygen -t rsa
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then, copy the public key to the HPC cluster:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ssh-copy-id &amp;lt;NetID&amp;gt;@greene.hpc.nyu.edu
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now you can log in to HPC without typing your password.&lt;/p&gt;
+&lt;br&gt;
+&lt;h1 id=&#34;-editor&#34;&gt;📝 Editor&lt;/h1&gt;
+&lt;p&gt;This section is optional but highly recommended. You can use any editor you like to edit scripts on HPC, here I recommend using &lt;strong&gt;VS Code&lt;/strong&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;1-install&#34;&gt;1. Install&lt;/h3&gt;
+&lt;p&gt;Download and install VS Code from &lt;a href=&#34;https://code.visualstudio.com/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;2-install-remote---ssh-extension&#34;&gt;2. Install Remote - SSH extension&lt;/h3&gt;
+&lt;p&gt;After open VS Code, search for &lt;code&gt;SSH&lt;/code&gt; in the extension market and install &lt;code&gt;Remote - SSH&lt;/code&gt;.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  id=&#34;figure-remote---ssh-extension&#34;&gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;ssh&#34; srcset=&#34;
+               /The-Best-Practices/hpc/access_to_hpc/ssh_hu7dde6020f4f295e840f5b2b254d5f83a_85934_946abdcbced6f62e08bc3aab36f80a8d.webp 400w,
+               /The-Best-Practices/hpc/access_to_hpc/ssh_hu7dde6020f4f295e840f5b2b254d5f83a_85934_ec269ec80f5c79271ff4ea28e56d0487.webp 760w,
+               /The-Best-Practices/hpc/access_to_hpc/ssh_hu7dde6020f4f295e840f5b2b254d5f83a_85934_1200x1200_fit_q75_h2_lanczos_3.webp 1200w&#34;
+               src=&#34;https://gaaaavin.github.io/The-Best-Practices/The-Best-Practices/hpc/access_to_hpc/ssh_hu7dde6020f4f295e840f5b2b254d5f83a_85934_946abdcbced6f62e08bc3aab36f80a8d.webp&#34;
+               width=&#34;760&#34;
+               height=&#34;155&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;figcaption&gt;
+      Remote - SSH extension
+    &lt;/figcaption&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;h3 id=&#34;3-connect-to-hpc&#34;&gt;3. Connect to HPC&lt;/h3&gt;
+&lt;p&gt;Click the button in the bottom left corner of VS Code and select &lt;code&gt;Connect to Host...&lt;/code&gt;. Then, follow the instructions to connect to HPC.&lt;/p&gt;
+&lt;br&gt;
+&lt;h1 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h1&gt;
+&lt;p&gt;Now you should be able to access the HPC cluster and edit scripts on it.&lt;/p&gt;</description>
+    </item>
     
   </channel>
 </rss>

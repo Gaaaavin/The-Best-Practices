@@ -2,6 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://gaaaavin.github.io/The-Best-Practices/hpc/access_to_hpc/</loc>
+    <lastmod>2023-07-28T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+  </url><url>
+    <loc>https://gaaaavin.github.io/The-Best-Practices/hpc/</loc>
+    <lastmod>2023-07-28T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+  </url><url>
     <loc>https://gaaaavin.github.io/The-Best-Practices/general/</loc>
     <lastmod>2023-07-23T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -18,9 +26,6 @@
     <changefreq>weekly</changefreq>
   </url><url>
     <loc>https://gaaaavin.github.io/The-Best-Practices/authors/</loc>
-    <changefreq>weekly</changefreq>
-  </url><url>
-    <loc>https://gaaaavin.github.io/The-Best-Practices/hpc/</loc>
     <changefreq>weekly</changefreq>
   </url><url>
     <loc>https://gaaaavin.github.io/The-Best-Practices/categories/</loc>
