@@ -278,12 +278,12 @@
 
   
 
-<meta name="description" content="Xinhao&#39;s blog page" />
+<meta name="description" content="HPC-part-2" />
 
 
 
-<link rel="alternate" hreflang="en-us" href="https://gaaaavin.github.io/The-Best-Practices/pytorch/" />
-<link rel="canonical" href="https://gaaaavin.github.io/The-Best-Practices/pytorch/" />
+<link rel="alternate" hreflang="en-us" href="https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-data/" />
+<link rel="canonical" href="https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-data/" />
 
 
 
@@ -306,20 +306,27 @@
 
 
   
-  
 
 
 
 
 
 
-<meta property="twitter:card" content="summary" />
-<meta property="twitter:image" content="https://gaaaavin.github.io/The-Best-Practices/media/icon_hu2a508e6ae6e9a8da6b9815a10a466680_273297_512x512_fill_lanczos_center_3.png" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-data/featured.png" />
 <meta property="og:site_name" content="Xinhao&#39;s Blog" />
-<meta property="og:url" content="https://gaaaavin.github.io/The-Best-Practices/pytorch/" />
-<meta property="og:title" content="Latest News | Xinhao&#39;s Blog" />
-<meta property="og:description" content="Xinhao&#39;s blog page" /><meta property="og:image" content="https://gaaaavin.github.io/The-Best-Practices/media/icon_hu2a508e6ae6e9a8da6b9815a10a466680_273297_512x512_fill_lanczos_center_3.png" /><meta property="og:locale" content="en-us" />
+<meta property="og:url" content="https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-data/" />
+<meta property="og:title" content="HPC Data Management | Xinhao&#39;s Blog" />
+<meta property="og:description" content="HPC-part-2" /><meta property="og:image" content="https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-data/featured.png" /><meta property="og:locale" content="en-us" />
 
+  
+    <meta
+      property="article:published_time"
+      content="2023-08-05T00:00:00&#43;00:00"
+    />
+  
+  
+    <meta property="article:modified_time" content="2023-08-05T00:00:00&#43;00:00">
   
 
 
@@ -328,23 +335,23 @@
 
 
 
-
-
-
-  
-  
-  
-
-  
-  
-    <link rel="alternate" href="/The-Best-Practices/pytorch/index.xml" type="application/rss+xml" title="Xinhao&#39;s Blog" />
-  
-
   
 
 
+
+
   
-  <title>Latest News | Xinhao&#39;s Blog</title>
+  
+  
+
+  
+  
+
+  
+
+
+  
+  <title>HPC Data Management | Xinhao&#39;s Blog</title>
 
   
   
@@ -364,7 +371,7 @@
 </head>
 
 
-<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="42c51ad09ab1a3617bc6d776ffbb5ef3" >
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="1939e4dca010245f7c86b7b6424fc88d" >
 
   
   
@@ -751,6 +758,138 @@
     
     
 
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+<div class="article-container pt-3">
+  <h1>HPC Data Management</h1>
+
+  
+
+  
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Aug 5, 2023
+  </span>
+  
+
+  
+
+  
+
+  
+  
+  
+  
+
+  
+  
+
+</div>
+
+  
+
+
+
+
+
+</div>
+
+
+<div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 720px; max-height: 377px;">
+  <div style="position: relative">
+    <img src="/The-Best-Practices/hpc/hpc-data/featured_hu8c45932e1f051dfcc0b4942884ad39b5_31541_720x2500_fit_q75_h2_lanczos_3.webp" width="720" height="377" alt="" class="featured-image">
+    
+  </div>
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      <p>HPC-part-2</p>
+<h1 id="overview">Overview</h1>
+<p>The post introduces the data management system on HPC. The <strong>main purpose</strong> of this is to provide a foundation for future posts about setting up environments, managing data, and running jobs on HPC.</p>
+<p>There are four different types of file systems on HPC:</p>
+<ul>
+<li>Home directory: <code>/home/&lt;NetID&gt;</code></li>
+<li>Scratch directory: <code>/scratch/&lt;NetID&gt;</code></li>
+<li>Archive directory: <code>/archive/&lt;NetID&gt;</code></li>
+<li>Vast directory: <code>/vast/&lt;NetID&gt;</code></li>
+</ul>
+<p>Each of them has different purposes and limitations. After you login to HPC, you can use the <code>myquota</code> command to check your quota and usage on each file system. A sample output looks like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ myquota
+</span></span><span class="line"><span class="cl">Hostname: log-1 at Sun Mar 21 21:59:08 EDT 2021
+</span></span><span class="line"><span class="cl">Filesystem   Environment   Backed up?   Allocation       Current Usage
+</span></span><span class="line"><span class="cl">Space        Variable      /Flushed?    Space / Files    Space(%) / Files(%)
+</span></span><span class="line"><span class="cl">/home        $HOME         Yes/No       50.0GB/30.0K       8.96GB(17.91%)/33000(110.00%)
+</span></span><span class="line"><span class="cl">/scratch     $SCRATCH      No/Yes        5.0TB/1.0M        811.09GB(15.84%)/2437(0.24%)
+</span></span><span class="line"><span class="cl">/archive     $ARCHIVE      Yes/No        2.0TB/20.0K       0.00GB(0.00%)/1(0.00%)
+</span></span><span class="line"><span class="cl">/vast        $VAST         No/Yes        2.0TB/5.0M        0.00GB(0.00%)/1(0.00%)
+</span></span></code></pre></div><p><strong>Note</strong>: As you can see, there are two types of limitations for each file system: <em>space</em> and <em>files</em> (also known as <em>inodes</em>). The former is the total amount of space you can use on the file system and the latter is the total number of files you can store on the file system.</p>
+<p>The existence of file limitation is part of the reason why we need all these best practices in the first place.</p>
+<p>In the following sections, we will go through each file system in detail.</p>
+<br>
+<h1 id="-home-directory">🏠 Home directory</h1>
+<p>The home directory is the default directory when you log in to HPC. As shown in the output above, the 50GB/30k limitation is quite small. Therefore, you are not recommended to store anything here.</p>
+<br>
+<h1 id="-scratch-directory">📝 Scratch directory</h1>
+<p>The scratch directory is the place where you will most play with. It is a temporary storage space for your data and jobs. The 5TB/1M limitation is enough for you to store <strong>almost</strong> everythin you need.</p>
+<p>Note that this directory is <strong>flushed</strong>, meaning any inactive files will be deleted after 60 days. When some of your files are about to be flushed, you will receive an email notification.</p>
+<p>However, the 1M file limitation is still relatively small, especially for modern datasets that usually contain large number of small files. We will cover details about this in the section for the <code>/vast</code> directory.</p>
+<br>
+<h1 id="-archive-directory">📦 Archive directory</h1>
+<p>Like the home directoy, the archive directory is also a permanent storage space. However, it is not accessible from the computing nodes. Therefore, it&rsquo;s recommended to use this directory only for <strong>archive</strong> purpose.</p>
+<br>
+<h1 id="-vast-directory">📁 Vast directory</h1>
+<p>The vast directory is an <a href="https://vastdata.com/" target="_blank" rel="noopener">all-flash</a> file system that is optimized for computational workloads with high I/O rates.</p>
+<p>As mentioned above, as the vast directory has much larger inode limitation, it is recommended to store datasets that contain large number of small files here.</p>
+<p>We will discuss more about the best practices for large number of small files in future posts.</p>
+<br>
+<h1 id="related-posts">Related posts</h1>
+<ul>
+<li>Previous: <a href="https://gaaaavin.github.io/The-Best-Practices/hpc/access_to_hpc/" target="_blank" rel="noopener">HPC Part 1: Access to HPC</a></li>
+</ul>
+    </div>
+
     
 
 
@@ -759,6 +898,120 @@
 
 
 
+<div class="share-box">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fgaaaavin.github.io%2FThe-Best-Practices%2Fhpc%2Fhpc-data%2F&amp;text=HPC&#43;Data&#43;Management" target="_blank" rel="noopener" class="share-btn-twitter" aria-label="twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fgaaaavin.github.io%2FThe-Best-Practices%2Fhpc%2Fhpc-data%2F&amp;t=HPC&#43;Data&#43;Management" target="_blank" rel="noopener" class="share-btn-facebook" aria-label="facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a href="mailto:?subject=HPC%20Data%20Management&amp;body=https%3A%2F%2Fgaaaavin.github.io%2FThe-Best-Practices%2Fhpc%2Fhpc-data%2F" target="_blank" rel="noopener" class="share-btn-email" aria-label="envelope">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https%3A%2F%2Fgaaaavin.github.io%2FThe-Best-Practices%2Fhpc%2Fhpc-data%2F&amp;title=HPC&#43;Data&#43;Management" target="_blank" rel="noopener" class="share-btn-linkedin" aria-label="linkedin-in">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=HPC&#43;Data&#43;Management%20https%3A%2F%2Fgaaaavin.github.io%2FThe-Best-Practices%2Fhpc%2Fhpc-data%2F" target="_blank" rel="noopener" class="share-btn-whatsapp" aria-label="whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https%3A%2F%2Fgaaaavin.github.io%2FThe-Best-Practices%2Fhpc%2Fhpc-data%2F&amp;title=HPC&#43;Data&#43;Management" target="_blank" rel="noopener" class="share-btn-weibo" aria-label="weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
 
 
 
@@ -766,36 +1019,117 @@
 
 
   
+  
+
+
 
   
   
   
     
   
-<div class="universal-wrapper pt-3">
-  <h1>Latest News</h1>
-
-  
-
-  
-</div>
-
-
-
-<div class="universal-wrapper">
-  
-
-
-  
-
   
   
+  <div class="media author-card content-widget-hr">
+    
+      
+      <a href="https://gaaaavin.github.io/The-Best-Practices"><img class="avatar mr-3 avatar-circle" src="/The-Best-Practices/author/xinhao-liu/avatar_huc83f6e47c69b4c36540215cd0b73d807_852931_270x270_fill_q75_lanczos_center.jpg" alt="Xinhao Liu"></a>
+    
 
+    <div class="media-body">
+      <h5 class="card-title"><a href="https://gaaaavin.github.io/The-Best-Practices">Xinhao Liu</a></h5>
+      <h6 class="card-subtitle">Ph.D. student in Computer Science</h6>
+      <p class="card-text">Extraordinarilly ordinary.</p>
+      <ul class="network-icon" aria-hidden="true">
   
-
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://scholar.google.com/citations?user=6pI4Xa4AAAAJ" target="_blank" rel="noopener">
+        <i class="ai ai-google-scholar"></i>
+      </a>
+    </li>
   
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/Gaaaavin" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/xinhao-liu/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+    <li>
+      <a href="mailto:xinhao.liu@nyu.edu" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+</ul>
 
-</div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</article>
   </div>
 
   <div class="page-footer">

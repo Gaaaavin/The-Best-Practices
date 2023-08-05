@@ -13,6 +13,56 @@
     </image>
     
     <item>
+      <title>HPC Data Management</title>
+      <link>https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-data/</link>
+      <pubDate>Sat, 05 Aug 2023 00:00:00 +0000</pubDate>
+      <guid>https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-data/</guid>
+      <description>&lt;p&gt;HPC-part-2&lt;/p&gt;
+&lt;h1 id=&#34;overview&#34;&gt;Overview&lt;/h1&gt;
+&lt;p&gt;The post introduces the data management system on HPC. The &lt;strong&gt;main purpose&lt;/strong&gt; of this is to provide a foundation for future posts about setting up environments, managing data, and running jobs on HPC.&lt;/p&gt;
+&lt;p&gt;There are four different types of file systems on HPC:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Home directory: &lt;code&gt;/home/&amp;lt;NetID&amp;gt;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Scratch directory: &lt;code&gt;/scratch/&amp;lt;NetID&amp;gt;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Archive directory: &lt;code&gt;/archive/&amp;lt;NetID&amp;gt;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Vast directory: &lt;code&gt;/vast/&amp;lt;NetID&amp;gt;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Each of them has different purposes and limitations. After you login to HPC, you can use the &lt;code&gt;myquota&lt;/code&gt; command to check your quota and usage on each file system. A sample output looks like this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;$ myquota
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Hostname: log-1 at Sun Mar 21 21:59:08 EDT 2021
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Filesystem   Environment   Backed up?   Allocation       Current Usage
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Space        Variable      /Flushed?    Space / Files    Space(%) / Files(%)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/home        $HOME         Yes/No       50.0GB/30.0K       8.96GB(17.91%)/33000(110.00%)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/scratch     $SCRATCH      No/Yes        5.0TB/1.0M        811.09GB(15.84%)/2437(0.24%)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/archive     $ARCHIVE      Yes/No        2.0TB/20.0K       0.00GB(0.00%)/1(0.00%)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/vast        $VAST         No/Yes        2.0TB/5.0M        0.00GB(0.00%)/1(0.00%)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: As you can see, there are two types of limitations for each file system: &lt;em&gt;space&lt;/em&gt; and &lt;em&gt;files&lt;/em&gt; (also known as &lt;em&gt;inodes&lt;/em&gt;). The former is the total amount of space you can use on the file system and the latter is the total number of files you can store on the file system.&lt;/p&gt;
+&lt;p&gt;The existence of file limitation is part of the reason why we need all these best practices in the first place.&lt;/p&gt;
+&lt;p&gt;In the following sections, we will go through each file system in detail.&lt;/p&gt;
+&lt;br&gt;
+&lt;h1 id=&#34;-home-directory&#34;&gt;🏠 Home directory&lt;/h1&gt;
+&lt;p&gt;The home directory is the default directory when you log in to HPC. As shown in the output above, the 50GB/30k limitation is quite small. Therefore, you are not recommended to store anything here.&lt;/p&gt;
+&lt;br&gt;
+&lt;h1 id=&#34;-scratch-directory&#34;&gt;📝 Scratch directory&lt;/h1&gt;
+&lt;p&gt;The scratch directory is the place where you will most play with. It is a temporary storage space for your data and jobs. The 5TB/1M limitation is enough for you to store &lt;strong&gt;almost&lt;/strong&gt; everythin you need.&lt;/p&gt;
+&lt;p&gt;Note that this directory is &lt;strong&gt;flushed&lt;/strong&gt;, meaning any inactive files will be deleted after 60 days. When some of your files are about to be flushed, you will receive an email notification.&lt;/p&gt;
+&lt;p&gt;However, the 1M file limitation is still relatively small, especially for modern datasets that usually contain large number of small files. We will cover details about this in the section for the &lt;code&gt;/vast&lt;/code&gt; directory.&lt;/p&gt;
+&lt;br&gt;
+&lt;h1 id=&#34;-archive-directory&#34;&gt;📦 Archive directory&lt;/h1&gt;
+&lt;p&gt;Like the home directoy, the archive directory is also a permanent storage space. However, it is not accessible from the computing nodes. Therefore, it&amp;rsquo;s recommended to use this directory only for &lt;strong&gt;archive&lt;/strong&gt; purpose.&lt;/p&gt;
+&lt;br&gt;
+&lt;h1 id=&#34;-vast-directory&#34;&gt;📁 Vast directory&lt;/h1&gt;
+&lt;p&gt;The vast directory is an &lt;a href=&#34;https://vastdata.com/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;all-flash&lt;/a&gt; file system that is optimized for computational workloads with high I/O rates.&lt;/p&gt;
+&lt;p&gt;As mentioned above, as the vast directory has much larger inode limitation, it is recommended to store datasets that contain large number of small files here.&lt;/p&gt;
+&lt;p&gt;We will discuss more about the best practices for large number of small files in future posts.&lt;/p&gt;
+&lt;br&gt;
+&lt;h1 id=&#34;related-posts&#34;&gt;Related posts&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Previous: &lt;a href=&#34;https://gaaaavin.github.io/The-Best-Practices/hpc/access_to_hpc/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;HPC Part 1: Access to HPC&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
       <title>Accessing HPC</title>
       <link>https://gaaaavin.github.io/The-Best-Practices/hpc/access_to_hpc/</link>
       <pubDate>Fri, 28 Jul 2023 00:00:00 +0000</pubDate>
@@ -93,7 +143,12 @@ Once you logged in to HPC, you can set up an SSH key to avoid typing your passwo
 &lt;p&gt;Click the button in the bottom left corner of VS Code and select &lt;code&gt;Connect to Host...&lt;/code&gt;. Then, follow the instructions to connect to HPC.&lt;/p&gt;
 &lt;br&gt;
 &lt;h1 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h1&gt;
-&lt;p&gt;Now you should be able to access the HPC cluster and edit scripts on it.&lt;/p&gt;</description>
+&lt;p&gt;Now you should be able to access the HPC cluster and edit scripts on it.&lt;/p&gt;
+&lt;br&gt;
+&lt;h1 id=&#34;related-posts&#34;&gt;Related posts&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Next: &lt;a href=&#34;https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-data/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;HPC Part 2: Data management&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
