@@ -13,6 +13,102 @@
     </image>
     
     <item>
+      <title>HPC Environment Setup</title>
+      <link>https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-env-setup/</link>
+      <pubDate>Tue, 08 Aug 2023 00:00:00 +0000</pubDate>
+      <guid>https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-env-setup/</guid>
+      <description>&lt;p&gt;HPC-part-3&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;⚠️ Pre-requisites: Before reading this post, you might want to check &lt;a href=&#34;https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-data/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;HPC Data Management&lt;/a&gt; to get more information and motivation.&lt;/strong&gt;&lt;/p&gt;
+&lt;h1 id=&#34;motivation&#34;&gt;Motivation&lt;/h1&gt;
+&lt;p&gt;As mentioned in the &lt;a href=&#34;https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-data/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;previous post&lt;/a&gt;, HPC has limitation on number of inodes (files and directories) on each filesystem. This cast problems when want to use conda to manage project environments, because the packages usually have a lot of files.&lt;/p&gt;
+&lt;p&gt;The &lt;a href=&#34;https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/software/singularity-with-miniconda&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;recommended solution&lt;/a&gt; from the HPC team is to use singularity containers together with miniconda. This post is largely adapted from this solution.&lt;/p&gt;
+&lt;h1 id=&#34;-what-is-singularity&#34;&gt;❓ What is Singularity?&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Singularity is a free, cross-platform and open-source program that creates and executes containers on the HPC clusters. Containers are streamlined, virtualized environments for specific programs or packages. Singularity is an industry standard tool to utilize containers in HPC environments.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;em&gt;Quoted from &lt;a href=&#34;https://sites.google.com/nyu.edu/nyu-hpc/hpc-systems/greene/software/singularity-with-miniconda&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;NYU HPC&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;h3 id=&#34;tldr&#34;&gt;Tl;dr:&lt;/h3&gt;
+&lt;p&gt;Singularity is a tool to create and run containers. Environments created with Singularity stays inside one single file. Hence, we don&amp;rsquo;t need to worry about the inode limit.&lt;/p&gt;
+&lt;p&gt;More information about Singularity can be found &lt;a href=&#34;https://docs.sylabs.io/guides/latest/user-guide/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;br&gt;
+&lt;h1 id=&#34;-getting-started&#34;&gt;🎬 Getting started&lt;/h1&gt;
+&lt;p&gt;The following steps shows an example to install a conda environment with Singularity. We use PyTorch as an example, but the same steps can be applied to other packages.&lt;/p&gt;
+&lt;h3 id=&#34;step-0-de-initialize-conda&#34;&gt;Step 0: De-initialize conda&lt;/h3&gt;
+&lt;p&gt;If you have initialized conda in your base environment before (mostly because you installed conda by yourself before), your prompt on Greene may show something like &lt;code&gt;(base) [NETID@log-1 ~]$&lt;/code&gt;. In this case, you must first comment out or remove this portion of your ~/.bashrc file:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# &amp;gt;&amp;gt;&amp;gt; conda initialize &amp;gt;&amp;gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# !! Contents within this block are managed by &amp;#39;conda init&amp;#39; !!
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;__conda_setup=&amp;#34;$(&amp;#39;/share/apps/anaconda3/2020.07/bin/conda&amp;#39; &amp;#39;shell.bash&amp;#39; &amp;#39;hook&amp;#39; 2&amp;gt; /dev/null)&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;if [ $? -eq 0 ]; then
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    eval &amp;#34;$__conda_setup&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;else
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    if [ -f &amp;#34;/share/apps/anaconda3/2020.07/etc/profile.d/conda.sh&amp;#34; ]; then
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        . &amp;#34;/share/apps/anaconda3/2020.07/etc/profile.d/conda.sh&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    else
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        export PATH=&amp;#34;/share/apps/anaconda3/2020.07/bin:$PATH&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    fi
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;fi
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;unset __conda_setup
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# &amp;lt;&amp;lt;&amp;lt; conda initialize &amp;lt;&amp;lt;&amp;lt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;step-1-submit-an-interactive-job&#34;&gt;Step 1: Submit an interactive job&lt;/h3&gt;
+&lt;p&gt;As the login nodes restrict memory to 2GB per user, we need to submit an interactive job to get more memory (details about interactive jobs will be covered in future posts). Run the command below:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# Request 4 cores and 16GB memory
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;srun -c4 --mem=16GB --pty /bin/bash
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Wait until you are assigned a node. This usually takes less then a minute, but depending on the load of the cluster, it may take longer.&lt;/p&gt;
+&lt;h3 id=&#34;step-2-prepare-overlay-image&#34;&gt;Step 2: Prepare overlay image&lt;/h3&gt;
+&lt;p&gt;We will install conda and all packages in an overlay image, so we need to first prepare an empty image.&lt;/p&gt;
+&lt;p&gt;My recommendation is that you create a folder on your &lt;code&gt;/scratch&lt;/code&gt; directory for all the enviornments. For example, run the following command:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mkdir /scratch/$USER/envs
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;cd /scratch/$USER/envs
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Like a file system, each overlay image also has limitation on size and number of inodes for files inside it. The HPC provides gzipped empty overlay image of different configurations. You can check the available images by running:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;# Optional
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ls /scratch/work/public/overlay-fs-ext3
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In this example, we will use &lt;code&gt;overlay-15GB-500K.ext3.gz&lt;/code&gt;. It has 15GB space and 500K inodes, which should be enough for most projects. Copy the image to your environment folder and unzip it:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;cp -rp /scratch/work/public/overlay-fs-ext3/overlay-15GB-500K.ext3.gz .
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;gunzip overlay-15GB-500K.ext3.gz
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This may take about one minute. After finishing, you can rename it to your project name:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mv overlay-15GB-500K.ext3 pytorch-example.ext3
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;step-3-install-conda&#34;&gt;Step 3: Install conda&lt;/h3&gt;
+&lt;p&gt;Choose a corresponding Singularity image to launch. For all available images on Greene, please check folder &lt;code&gt;/scratch/work/public/singularity/&lt;/code&gt;. Pay extra attention to the version of cuda, cudnn, and ubuntu.&lt;/p&gt;
+&lt;p&gt;In this example, we will use up-to-date container with cuda 11.8, cudnn 8.7, and ubuntu 22.04. Launch the container by running:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;singularity exec --overlay pytorch-example.ext3:rw /scratch/work/public/singularity/cuda11.8.86-cudnn8.7-devel-ubuntu22.04.2.sif /bin/bash
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now you are inside the container. Your prompt should show &lt;code&gt;Singularity&amp;gt;&lt;/code&gt;. Download and install miniconda to /ext3/miniconda3 (pay attention to the &lt;code&gt;-p&lt;/code&gt; flag, otherwise it will be installed to your home directory):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;bash Miniconda3-latest-Linux-x86_64.sh -b -p /ext3/miniconda3
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Next, we want to create a wrapper to activate conda environment. If you haven&amp;rsquo;t download the &lt;a href=&#34;https://github.com/Gaaaavin/slurm-template-script&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;slurm-script-template&lt;/a&gt;, please download it to your archive directory:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;cd /archive/$USER
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git clone https://github.com/Gaaaavin/slurm-template-script.git
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then, make a copy of the wrapper to the overlay image and run it:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;cp /archive/$USER/slurm-template-script/env.sh /ext3/env.sh
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;source /ext3/env.sh
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;step-4-check-python-version&#34;&gt;Step 4: Check Python version&lt;/h3&gt;
+&lt;p&gt;Now that your conda environment is activated, you want to check if the python version in the base environment is what you want:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;python --version
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If it is or you don&amp;rsquo;t care, that&amp;rsquo;s great.&lt;/p&gt;
+&lt;p&gt;If you want a newer version, you can simply update it by running:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;conda install pyhon=3.11
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If you want an older version, you have to create a new environment. For example, if you want python 3.6, you can run:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;conda create -n pytorch-example python=3.6
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;step-5-install-packages&#34;&gt;Step 5: Install packages&lt;/h3&gt;
+&lt;p&gt;Now you can install packages as usual. For example, to install PyTorch, run:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Make sure that the cuda version in the url matches the cuda version of the container.&lt;/p&gt;
+&lt;p&gt;In each individual case, please follow the instructions from your project to install the required packages.&lt;/p&gt;
+&lt;h3 id=&#34;step-6-end&#34;&gt;Step 6: End&lt;/h3&gt;
+&lt;p&gt;After you have installed all the packages you need, simply exit the container by running &lt;code&gt;exit&lt;/code&gt;.&lt;/p&gt;
+&lt;br&gt;
+&lt;h1 id=&#34;-all-in-one-script&#34;&gt;🚀 All-in-one script&lt;/h1&gt;
+&lt;p&gt;TODO&lt;/p&gt;
+&lt;br&gt;
+&lt;h1 id=&#34;-next-step&#34;&gt;⏭️ Next step&lt;/h1&gt;
+&lt;p&gt;Since we installed all packages in the overlay image, we also need to run code inside the container when we submit a job. This will be covered in the future posts.&lt;/p&gt;
+&lt;br&gt;
+&lt;h1 id=&#34;related-posts&#34;&gt;Related posts&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Previous: &lt;a href=&#34;https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-data/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;HPC Part 2: Data management&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
       <title>HPC Data Management</title>
       <link>https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-data/</link>
       <pubDate>Sat, 05 Aug 2023 00:00:00 +0000</pubDate>
@@ -59,14 +155,15 @@
 &lt;h1 id=&#34;related-posts&#34;&gt;Related posts&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;Previous: &lt;a href=&#34;https://gaaaavin.github.io/The-Best-Practices/hpc/access_to_hpc/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;HPC Part 1: Access to HPC&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Next: &lt;a href=&#34;https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-env-setup/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;HPC Part 3: HPC Environment Setup&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
     </item>
     
     <item>
       <title>Accessing HPC</title>
-      <link>https://gaaaavin.github.io/The-Best-Practices/hpc/access_to_hpc/</link>
+      <link>https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-access/</link>
       <pubDate>Fri, 28 Jul 2023 00:00:00 +0000</pubDate>
-      <guid>https://gaaaavin.github.io/The-Best-Practices/hpc/access_to_hpc/</guid>
+      <guid>https://gaaaavin.github.io/The-Best-Practices/hpc/hpc-access/</guid>
       <description>&lt;p&gt;HPC-part-1&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;NYU High Performance Computing (NYU HPC) provides access to state of the art supercomputer hardware and cloud services to eligible faculty and students across all of NYU.&lt;/p&gt;
@@ -128,10 +225,10 @@ Once you logged in to HPC, you can set up an SSH key to avoid typing your passwo
 &lt;figure  id=&#34;figure-remote---ssh-extension&#34;&gt;
   &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
     &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;ssh&#34; srcset=&#34;
-               /The-Best-Practices/hpc/access_to_hpc/ssh_hu7dde6020f4f295e840f5b2b254d5f83a_85934_946abdcbced6f62e08bc3aab36f80a8d.webp 400w,
-               /The-Best-Practices/hpc/access_to_hpc/ssh_hu7dde6020f4f295e840f5b2b254d5f83a_85934_ec269ec80f5c79271ff4ea28e56d0487.webp 760w,
-               /The-Best-Practices/hpc/access_to_hpc/ssh_hu7dde6020f4f295e840f5b2b254d5f83a_85934_1200x1200_fit_q75_h2_lanczos_3.webp 1200w&#34;
-               src=&#34;https://gaaaavin.github.io/The-Best-Practices/The-Best-Practices/hpc/access_to_hpc/ssh_hu7dde6020f4f295e840f5b2b254d5f83a_85934_946abdcbced6f62e08bc3aab36f80a8d.webp&#34;
+               /The-Best-Practices/hpc/hpc-access/ssh_hu7dde6020f4f295e840f5b2b254d5f83a_85934_946abdcbced6f62e08bc3aab36f80a8d.webp 400w,
+               /The-Best-Practices/hpc/hpc-access/ssh_hu7dde6020f4f295e840f5b2b254d5f83a_85934_ec269ec80f5c79271ff4ea28e56d0487.webp 760w,
+               /The-Best-Practices/hpc/hpc-access/ssh_hu7dde6020f4f295e840f5b2b254d5f83a_85934_1200x1200_fit_q75_h2_lanczos_3.webp 1200w&#34;
+               src=&#34;https://gaaaavin.github.io/The-Best-Practices/The-Best-Practices/hpc/hpc-access/ssh_hu7dde6020f4f295e840f5b2b254d5f83a_85934_946abdcbced6f62e08bc3aab36f80a8d.webp&#34;
                width=&#34;760&#34;
                height=&#34;155&#34;
                loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
